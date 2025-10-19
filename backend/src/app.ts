@@ -6,6 +6,8 @@ import { v2 as cloudinary } from "cloudinary";
 import { errorHandler } from "./middlewares/errorHandler";
 import authRoutes from "./routes/auth.routes";
 import listingRoutes from "./routes/listing.routes";
+import transactionRoutes from "./routes/transaction.routes";
+import { stripeWebhook } from "./controllers/transaction.controller";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -13,6 +15,12 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 const app = express();
+
+app.post(
+  "/api/webhook",
+  express.raw({ type: "application/json" }),
+  stripeWebhook
+);
 
 app.use(helmet());
 app.use(cors());
@@ -30,6 +38,7 @@ app.use(cookieParser());
 // routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/listing", listingRoutes);
+app.use("/api/v1/transaction", transactionRoutes);
 
-app.use(errorHandler);
+// app.use(errorHandler);
 export default app;

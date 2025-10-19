@@ -3,11 +3,11 @@ import mongoose, { Document } from "mongoose";
 export interface ITransaction extends Document {
   userId: mongoose.Types.ObjectId;
   listingId: mongoose.Types.ObjectId;
-  orderId: string;
-  paymentId?: string;
   amount: number;
   currency: string;
-  status: "created" | "success" | "failed";
+  status: "pending" | "success" | "failed";
+  stripeSessionId?: string;
+  paymentIntentId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -24,15 +24,15 @@ const transactionSchema = new mongoose.Schema<ITransaction>(
       ref: "Listing",
       required: true,
     },
-    orderId: { type: String, required: true },
-    paymentId: { type: String },
     amount: { type: Number, required: true },
     currency: { type: String, default: "INR" },
+    stripeSessionId: { type: String },
     status: {
       type: String,
-      enum: ["created", "success", "failed"],
-      default: "created",
+      enum: ["pending", "success", "failed"],
+      default: "pending",
     },
+    paymentIntentId: { type: String },
   },
   { timestamps: true }
 );
