@@ -42,7 +42,7 @@ export const addListing = async (req: Request, res: Response) => {
       location,
       cityName,
       rent,
-      accomodationType,
+      accommodationType,
       lookingForGender,
       contactNumber,
       contactEmail,
@@ -63,7 +63,7 @@ export const addListing = async (req: Request, res: Response) => {
       !location ||
       !cityName ||
       !rent ||
-      !accomodationType ||
+      !accommodationType ||
       !lookingForGender ||
       !contactEmail
     ) {
@@ -81,7 +81,7 @@ export const addListing = async (req: Request, res: Response) => {
       location,
       cityName,
       rent,
-      accomodationType,
+      accommodationType,
       lookingForGender,
       imageUrl,
       isFeatured: false,

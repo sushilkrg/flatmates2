@@ -3,7 +3,12 @@ import Stripe from "stripe";
 import Listing from "../models/Listing";
 import Transaction from "../models/Transaction";
 // import stripe from "stripe";
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+  apiVersion: "2025-09-30.clover" // use your current Stripe API version
+});
+
+// console.log("Stripe key:", process.env.STRIPE_SECRET_KEY ? "Loaded ✅" : "Missing ❌");
+
 // const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 //   apiVersion: "22025-09-30.clover",
 // });
