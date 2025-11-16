@@ -1,9 +1,11 @@
-
 "use client";
 import { axiosClient } from "@/lib/axiosClient";
+import { setUser } from "@/redux/slices/authSlice";
+import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -11,6 +13,7 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -19,22 +22,41 @@ const Register = () => {
       return;
     }
     try {
-      const res = await axiosClient.post("/auth/signup", {
-        body: JSON.stringify({
+      // const res = await axiosClient.post("/auth/signup", {
+      //   body: JSON.stringify({
+      //     name,
+      //     email,
+      //     password,
+      //   }),
+      // });
+      const result = await axios.post(
+        // "http://localhost:5000/api/v1/auth/login",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/signup`,
+        {
           name,
           email,
           password,
-        }),
-      });
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
       // const data = await res.json();
 
       // if (!res.ok) {
       //   throw new Error(data.error || "Registration failed");
       // }
 
-      router.push("/login");
+      console.log("result-", result);
+      dispatch(setUser(result.data));
+      if (result?.status !== 200) {
+        console.log(result);
+      } else {
+        router.push("/search");
+      }
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 

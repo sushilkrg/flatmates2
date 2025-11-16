@@ -170,7 +170,7 @@ const page = () => {
   ];
 
   const handleClick = async () => {
-    const res = await axios.get("http://localhost:5000/api/v1/listing", {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/listing`, {
       withCredentials: true,
     });
     console.log("response-", res);

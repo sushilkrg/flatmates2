@@ -28,7 +28,8 @@ const Login = () => {
       // });
 
       const result = await axios.post(
-        "http://localhost:5000/api/v1/auth/login",
+        // "http://localhost:5000/api/v1/auth/login",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`,
         {
           email,
           password,
