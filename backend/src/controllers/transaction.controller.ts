@@ -3,41 +3,56 @@ import Stripe from "stripe";
 import Listing from "../models/Listing";
 import Transaction from "../models/Transaction";
 // import stripe from "stripe";
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: "2025-09-30.clover" // use your current Stripe API version
-});
-
-// console.log("Stripe key:", process.env.STRIPE_SECRET_KEY ? "Loaded ✅" : "Missing ❌");
-
 // const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-//   apiVersion: "22025-09-30.clover",
+//   apiVersion: "2025-09-30.clover" // use your current Stripe API version
 // });
+
+console.log(
+  "Stripe key:",
+  process.env.STRIPE_SECRET_KEY ? process.env.STRIPE_SECRET_KEY : "Missing ❌"
+);
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+  apiVersion: "2025-09-30.clover",
+});
 // POST /payments/create-checkout-session
 export const createCheckoutSession = async (req: Request, res: Response) => {
-  const { listingId, amount } = req.body;
+  try {
+    const { listingId, amount } = req.body;
 
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ["card"],
-    mode: "payment",
-    success_url: `${process.env.FRONTEND_URL}/payment-success`,
-    cancel_url: `${process.env.FRONTEND_URL}/payment-cancel`,
-    line_items: [
-      {
-        price_data: {
-          currency: "inr",
-          product_data: { name: "Feature Listing" },
-          unit_amount: amount * 100,
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
+      success_url: `${process.env.FRONTEND_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      // success_url: `${process.env.FRONTEND_URL}/payment-success`,
+      cancel_url: `${process.env.FRONTEND_URL}/payment-cancel`,
+      line_items: [
+        {
+          price_data: {
+            currency: "inr",
+            product_data: { name: "Feature Listing" },
+            unit_amount: amount * 100,
+          },
+          quantity: 1,
         },
-        quantity: 1,
+      ],
+      metadata: {
+        listingId,
+        userId: req.user.id,
       },
-    ],
-    metadata: {
-      listingId,
-      userId: req.user.id,
-    },
-  });
-
-  return res.json({ sessionId: session.id });
+    });
+    console.log("Stripe session created:", session.url);
+    // return res.json({ sessionId: session.id });
+    return res.status(200).json({
+      success: true,
+      url: session.url, // ⬅ MUST BE RETURNED
+      id: session.id,
+    });
+    // return res.json({ message: "Nothingggg" });
+  } catch (err) {
+    console.error("Stripe error:", err);
+    return res.status(500).json({ message: "Stripe error" });
+  }
 };
 
 // POST /webhook

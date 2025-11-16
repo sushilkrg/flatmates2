@@ -1,0 +1,191 @@
+"use client";
+import ListingCard from "@/components/ListingCard";
+import axios from "axios";
+import React from "react";
+
+const page = () => {
+  const listingsData = [
+    {
+      _id: "68f0aafc7167a85e7d45ce45",
+      postedBy: "68e9439e27842ad16132f16e",
+      postedByName: "A1user",
+      location: "sector 58",
+      cityName: "Noida",
+      rent: 5000,
+      lookingForGender: "male",
+      isFeatured: false,
+      contactNumber: "9900990099",
+      contactEmail: "a1user@gmail.com",
+      facilities: ["gym", "swimming pool"],
+      bookmarkedBy: [],
+      createdAt: "2025-10-16T08:21:16.581Z",
+      updatedAt: "2025-10-16T08:21:16.581Z",
+      __v: 0,
+      accommodationType: "flatmate",
+    },
+    {
+      _id: "68f0b6965127b58068e9408c",
+      postedBy: "68e9439e27842ad16132f16e",
+      postedByName: "A1user",
+      location: "sector 58",
+      cityName: "Noida",
+      rent: 5000,
+      lookingForGender: "male",
+      isFeatured: false,
+      contactNumber: "9900990099",
+      contactEmail: "a1user@gmail.com",
+      facilities: ["gym", "swimming pool"],
+      bookmarkedBy: [],
+      createdAt: "2025-10-16T09:10:46.629Z",
+      updatedAt: "2025-10-16T09:10:46.629Z",
+      __v: 0,
+      accommodationType: "flatmate",
+    },
+    {
+      _id: "68f4a2b27dd50542fa635d80",
+      postedBy: "68e9439e27842ad16132f16e",
+      postedByName: "A1user",
+      location: "sector 62",
+      cityName: "Mumbai",
+      rent: 25000,
+      accommodationType: "flatmate",
+      lookingForGender: "female",
+      isFeatured: false,
+      contactNumber: "9900990099",
+      contactEmail: "a1user@gmail.com",
+      facilities: ["gym", "swimming pool", "sports club", "spa"],
+      bookmarkedBy: [],
+      createdAt: "2025-10-19T08:34:58.508Z",
+      updatedAt: "2025-10-19T08:34:58.508Z",
+      __v: 0,
+    },
+    {
+      _id: "68f4a2b27dd50542fa635d801",
+      postedBy: "68e9439e27842ad16132f16e",
+      postedByName: "A1user",
+      location: "sector 62",
+      cityName: "Mumbai",
+      rent: 25000,
+      accommodationType: "flatmate",
+      lookingForGender: "female",
+      isFeatured: false,
+      contactNumber: "9900990099",
+      contactEmail: "a1user@gmail.com",
+      facilities: ["gym", "swimming pool", "sports club", "spa"],
+      bookmarkedBy: [],
+      createdAt: "2025-10-19T08:34:58.508Z",
+      updatedAt: "2025-10-19T08:34:58.508Z",
+      __v: 0,
+    },
+    {
+      _id: "68f4a2b27dd50542fa635d81",
+      postedBy: "68e9439e27842ad16132f16e",
+      postedByName: "A1user",
+      location: "sector 62",
+      cityName: "Mumbai",
+      rent: 25000,
+      accommodationType: "flatmate",
+      lookingForGender: "female",
+      isFeatured: false,
+      contactNumber: "9900990099",
+      contactEmail: "a1user@gmail.com",
+      facilities: ["gym", "swimming pool", "sports club", "spa"],
+      bookmarkedBy: [],
+      createdAt: "2025-10-19T08:34:58.508Z",
+      updatedAt: "2025-10-19T08:34:58.508Z",
+      __v: 0,
+    },
+    {
+      _id: "68f4a2b27dd50542fa635d82",
+      postedBy: "68e9439e27842ad16132f16e",
+      postedByName: "A1user",
+      location: "sector 62",
+      cityName: "Mumbai",
+      rent: 25000,
+      accommodationType: "flatmate",
+      lookingForGender: "female",
+      isFeatured: false,
+      contactNumber: "9900990099",
+      contactEmail: "a1user@gmail.com",
+      facilities: ["gym", "swimming pool", "sports club", "spa"],
+      bookmarkedBy: [],
+      createdAt: "2025-10-19T08:34:58.508Z",
+      updatedAt: "2025-10-19T08:34:58.508Z",
+      __v: 0,
+    },
+    {
+      _id: "68f4a2b27dd50542fa635d83",
+      postedBy: "68e9439e27842ad16132f16e",
+      postedByName: "A1user",
+      location: "sector 62",
+      cityName: "Mumbai",
+      rent: 25000,
+      accommodationType: "flatmate",
+      lookingForGender: "female",
+      isFeatured: false,
+      contactNumber: "9900990099",
+      contactEmail: "a1user@gmail.com",
+      facilities: ["gym", "swimming pool", "sports club", "spa"],
+      bookmarkedBy: [],
+      createdAt: "2025-10-19T08:34:58.508Z",
+      updatedAt: "2025-10-19T08:34:58.508Z",
+      __v: 0,
+    },
+    {
+      _id: "68f4a2b27dd50542fa635d84",
+      postedBy: "68e9439e27842ad16132f16e",
+      postedByName: "A1user",
+      location: "sector 62",
+      cityName: "Mumbai",
+      rent: 25000,
+      accommodationType: "flatmate",
+      lookingForGender: "female",
+      isFeatured: false,
+      contactNumber: "9900990099",
+      contactEmail: "a1user@gmail.com",
+      facilities: ["gym", "swimming pool", "sports club", "spa"],
+      bookmarkedBy: [],
+      createdAt: "2025-10-19T08:34:58.508Z",
+      updatedAt: "2025-10-19T08:34:58.508Z",
+      __v: 0,
+    },
+    {
+      _id: "68f4a2b27dd50542fa635d85",
+      postedBy: "68e9439e27842ad16132f16e",
+      postedByName: "A1user",
+      location: "sector 62",
+      cityName: "Mumbai",
+      rent: 25000,
+      accommodationType: "flatmate",
+      lookingForGender: "female",
+      isFeatured: false,
+      contactNumber: "9900990099",
+      contactEmail: "a1user@gmail.com",
+      facilities: ["gym", "swimming pool", "sports club", "spa"],
+      bookmarkedBy: [],
+      createdAt: "2025-10-19T08:34:58.508Z",
+      updatedAt: "2025-10-19T08:34:58.508Z",
+      __v: 0,
+    },
+  ];
+
+  const handleClick = async () => {
+    const res = await axios.get("http://localhost:5000/api/v1/listing", {
+      withCredentials: true,
+    });
+    console.log("response-", res);
+  };
+
+  return (
+    <div>
+      {/* {listingsData.map((listingData) => (
+        <ListingCard key={listingData?._id} listing={listingData} />
+      ))} */}
+      <button onClick={handleClick} className="p-2 text-white bg-gray-600">
+        Get-data
+      </button>
+    </div>
+  );
+};
+
+export default page;

@@ -14,7 +14,7 @@ import { isAuthenticated } from "../middlewares/isAuthenticated";
 
 const router = express.Router();
 
-router.get("/", getAllListings);
+router.get("/",isAuthenticated, getAllListings);
 router.get("/details/:id", getListingDetails);
 router.post("/add", isAuthenticated, addListing);
 router.patch("/bookmark/:listingId", isAuthenticated, toggleBookmark );

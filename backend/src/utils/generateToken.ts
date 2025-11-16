@@ -3,13 +3,16 @@ import { Response } from "express";
 
 export const generateTokenAndSetCookies = (userId: any, res: Response) => {
   const token = jwt.sign({ userId }, process.env.JWT_SECRET as string, {
-    expiresIn: "7d",
+    expiresIn: "10d",
   });
 
+  console.log("token in generateToken-", token);
+
   res.cookie("token", token, {
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    // httpOnly: true,
-    // secure: true,
-    sameSite: "none",
+    httpOnly: true,
+    secure: false, // must be false on localhost
+    sameSite: "lax", // safe default
+    path: "/",
+    maxAge: 10 * 24 * 60 * 60 * 1000,
   });
 };
