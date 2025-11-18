@@ -38,7 +38,8 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
       ],
       metadata: {
         listingId,
-        userId: req.user.id,
+        userId: String(req.user._id),
+        // userId: req.user._id.toString(),
       },
     });
     console.log("Stripe session created:", session.url);
