@@ -23,6 +23,12 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
+
+      // -------
+      // India export compliance: force Stripe to collect name + full billing address
+      billing_address_collection: "required", // collects name + full billing address[web:44][web:47]
+      customer_creation: "always", // creates a Customer with those details[web:45][web:47]
+      // -------
       success_url: `${process.env.FRONTEND_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
       // success_url: `${process.env.FRONTEND_URL}/payment-success`,
       cancel_url: `${process.env.FRONTEND_URL}/payment-cancel`,
@@ -44,6 +50,8 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
     });
     console.log("Stripe session created:", session.url);
     // return res.json({ sessionId: session.id });
+    console.log("Session URL-", session.url);
+
     return res.status(200).json({
       success: true,
       url: session.url, // ⬅ MUST BE RETURNED
