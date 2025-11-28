@@ -8,14 +8,18 @@ export const generateTokenAndSetCookies = (userId: any, res: Response) => {
 
   console.log("token in generateToken-", token);
 
-  let inProduction = process.env.IN_PRODUCTION === "true";
-
   res.cookie("token", token, {
     httpOnly: true,
     // secure: inProduction, // must be false on localhost
-    secure: true, // must be false on localhost
+    // secure: true, // must be false on localhost
+    // sameSite: "none", // safe default - lax on localhost
+
+    //  local server
+    // secure: true, // must be false on localhost
     // sameSite: "lax", // safe default - lax on localhost
-    sameSite: "none", // safe default - lax on localhost
+
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     path: "/",
     maxAge: 10 * 24 * 60 * 60 * 1000,
   });
