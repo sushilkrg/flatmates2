@@ -7,15 +7,15 @@ export function middleware(req: NextRequest) {
   console.log("token middleware-", token);
   
 
-  const { pathname } = req.nextUrl;
+  // const { pathname } = req.nextUrl;
 
-  const publicPaths = ["/login", "signup"];
+  // const publicPaths = ["/login", "signup"];
 
-  if (!token && !publicPaths.includes(pathname)) {
-    const url = req.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
-  }
+  // if (!token && !publicPaths.includes(pathname)) {
+  //   const url = req.nextUrl.clone();
+  //   url.pathname = "/login";
+  //   return NextResponse.redirect(url);
+  // }
 
   //   // 👮‍♂️ Role-based protection
   //   if (pathname.startsWith("/dashboard/admin") && role !== "admin") {
