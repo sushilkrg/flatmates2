@@ -19,7 +19,7 @@ export const generateTokenAndSetCookies = (userId: any, res: Response) => {
     // sameSite: "lax", // safe default - lax on localhost
 
     secure: true,
-    sameSite: "lax",
+    sameSite: "none",
 
     // secure: process.env.NODE_ENV === "production",
     // sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
