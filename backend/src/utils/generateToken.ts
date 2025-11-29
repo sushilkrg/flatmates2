@@ -18,8 +18,11 @@ export const generateTokenAndSetCookies = (userId: any, res: Response) => {
     // secure: true, // must be false on localhost
     // sameSite: "lax", // safe default - lax on localhost
 
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    secure: true,
+    sameSite: "lax",
+
+    // secure: process.env.NODE_ENV === "production",
+    // sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     path: "/",
     maxAge: 10 * 24 * 60 * 60 * 1000,
   });
