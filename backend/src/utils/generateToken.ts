@@ -17,7 +17,6 @@ export const generateTokenAndSetCookies = (userId: any, res: Response) => {
     //  local server
     // secure: true, // must be false on localhost
     // sameSite: "lax", // safe default - lax on localhost
-    domain: ".vercel.app",
     secure: true,
     sameSite: "none",
 
