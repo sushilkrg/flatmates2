@@ -169,21 +169,25 @@ const page = () => {
     },
   ];
 
-  const handleClick = async () => {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/listing`, {
-      withCredentials: true,
-    });
-    console.log("response-", res);
-  };
+  // const handleClick = async () => {
+  //   const res = await axios.get(
+  //     // `${process.env.NEXT_PUBLIC_API_BASE_URL}/listing`,
+  //     `/api/v1/listing`,
+  //      {
+  //     withCredentials: true,
+  //   });
+  //   console.log("response-", res);
+  // };
 
   return (
     <div>
       {/* {listingsData.map((listingData) => (
         <ListingCard key={listingData?._id} listing={listingData} />
       ))} */}
-      <button onClick={handleClick} className="p-2 text-white bg-gray-600">
+      {/* <button onClick={handleClick} className="p-2 text-white bg-gray-600">
         Get-data
-      </button>
+      </button> */}
+      <h2 className="text-center">search page</h2>
     </div>
   );
 };

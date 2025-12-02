@@ -81,7 +81,8 @@ const AddListingPage: React.FC = () => {
     // ✅ 2. ALWAYS create the listing with isFeatured: false
     const listingRes = await axios.post(
       // "http://localhost:5000/api/v1/listing/add",
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/listing/add`,
+      // `${process.env.NEXT_PUBLIC_API_BASE_URL}/listing/add`,
+      `/api/v1/listing/add`,
       {
         postedByName: formData?.postedByName,
         location: formData?.location,
@@ -106,7 +107,8 @@ const AddListingPage: React.FC = () => {
     if (isFeatured) {
       const checkoutRes = await axios.post(
         // "http://localhost:5000/api/v1/transaction/create-checkout-session",
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/transaction/create-checkout-session`,
+        // `${process.env.NEXT_PUBLIC_API_BASE_URL}/transaction/create-checkout-session`,
+        `/api/v1/transaction/create-checkout-session`,
         {
           amount: 199,
           listingId,
