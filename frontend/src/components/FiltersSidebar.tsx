@@ -1,11 +1,61 @@
 "use client";
 import { resetFilters, setFilters } from "@/redux/slices/filterSlice";
+import { setListings } from "@/redux/slices/listingSlice";
 import { RootState } from "@/redux/store";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function FiltersSidebar() {
   const dispatch = useDispatch();
   const filters = useSelector((state: RootState) => state.filters);
+
+  // -------------
+  // const [query, setQuery] = useState(filters.location);
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  // Update debouncedQuery 4s after last keypress
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedQuery(filters.location.trim());
+    }, 2000); // 4 seconds
+
+    return () => clearTimeout(handler);
+  }, [filters.location]);
+
+  // Call API when debouncedQuery changes
+  useEffect(() => {
+    if (!debouncedQuery) {
+      console.log("no data ");
+
+      return;
+    }
+
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const res = await axios.get(
+          `/api/v1/listing/search/${encodeURIComponent(debouncedQuery)}`
+        );
+        if (!res) throw new Error("Request failed");
+        console.log("res is - ", res);
+
+        const data = res?.data.results;
+        dispatch(setListings(data));
+        console.log(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [debouncedQuery]);
+
+  // ----------------
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -36,6 +86,8 @@ export default function FiltersSidebar() {
           name="location"
           value={filters.location}
           onChange={handleChange}
+          // value={query}
+          // onChange={(e) => setQuery(e.target.value)}
           className="border p-2 rounded w-full"
         />
       </div>

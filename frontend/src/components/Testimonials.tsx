@@ -40,7 +40,7 @@ const testimonials: Testimonial[] = [
     role: "Designer",
     company: "Pixel Studio",
     message:
-      "I moved to a new city and still found a great roommate before arriving. Huge time saver.",
+      "I moved to a new city and still found a great roommate before arriving. Huge time saver. lorem ipsum",
     avatar: "https://i.pravatar.cc/150?img=4",
   },
   {
@@ -48,8 +48,16 @@ const testimonials: Testimonial[] = [
     role: "Consultant",
     company: "BizLabs",
     message:
-      "The verification badges and reviews gave me confidence while choosing a place to stay.",
+      "The verification badges and reviews gave me confidence while choosing a place to stay. lorem ipsum",
     avatar: "https://i.pravatar.cc/150?img=5",
+  },
+  {
+    name: "Marsh Mehta",
+    role: "Consultant",
+    company: "Sky sports",
+    message:
+      "The verification badges and reviews gave me confidence while choosing a place to stay. lorem ipsum",
+    avatar: "https://i.pravatar.cc/150?img=6",
   },
 ];
 
