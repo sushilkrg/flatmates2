@@ -6,7 +6,7 @@ const Footer = () => {
     <footer className="bg-gray-800 text-gray-400 py-4  ">
       <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
         <div className="text-sm text-center md:text-left">
-          &copy; 2024 Flatmates - All rights reserved.
+          &copy; {new Date().getFullYear()} Flatmates - All rights reserved.
         </div>
         <div className="flex space-x-4 mt-2 md:mt-0">
           <Link href="/" className="hover:text-white">

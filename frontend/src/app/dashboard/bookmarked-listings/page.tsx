@@ -4,24 +4,23 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 const page = () => {
-  let listings: any = [];
-  const [myListings, setMyListings] = useState([]);
+  const [mySavedListings, setMySavedListings] = useState([]);
   const [loading, setLoading] = useState(false);
 
 
   useEffect(() => {
 
-    const getMyListings = async () => {
+    const getMySavedListings = async () => {
       try {
         setLoading(true);
         const res = await axios.get(
-          `/api/v1/listing/mylistings`
+          `/api/v1/listing/bookmarks`
         );
         if (!res) throw new Error("Request failed");
         console.log("res is - ", res);
 
         const data = res?.data;
-        setMyListings(data);
+        setMySavedListings(data);
         console.log(data);
       } catch (error) {
         console.error(error);
@@ -30,7 +29,7 @@ const page = () => {
       }
     }
 
-    getMyListings();
+    getMySavedListings();
 
   },[]);
 
@@ -41,7 +40,7 @@ const page = () => {
       </div>
     );
   }
-  if (!loading && myListings.length === 0) {
+  if (!loading && mySavedListings.length === 0) {
     return (
       <div>
         <p className="text-center">No data available</p>
@@ -50,7 +49,7 @@ const page = () => {
   }
   return (
     <div>
-      {myListings.map((listing: any) => (
+      {mySavedListings.map((listing: any) => (
         <ListingCard key={listing?._id} listing={listing} />
       ))}
     </div>
