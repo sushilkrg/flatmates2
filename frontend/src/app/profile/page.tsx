@@ -1,12 +1,17 @@
+"use client";
+import { RootState, store } from "@/redux/store";
 import React from "react";
+import { useSelector } from "react-redux";
 
 const Profile = () => {
+  const userData = useSelector((store: RootState) => store.auth.user);
+
   return (
     <div className="bg-white text-black min-h-screen">
       <div className="container mx-auto">
         <div className="flex justify-between items-center px-8 py-8">
           <h2 className="text-2xl font-bold">Profile</h2>
-          <button className="px-4 py-4 bg-green-500 rounded-xl text-white cursor-pointer">
+          <button className="px-4 py-2 bg-green-500 rounded-4xl text-white cursor-pointer">
             Edit profile
           </button>
         </div>
@@ -19,9 +24,15 @@ const Profile = () => {
           </div>
           <div className="">
             {/* for details  */}
-            <p>Name - A11user</p>
-            <p>Email - a11user@gmail.com</p>
-            <p>Mobile No - 9898989898</p>
+            <p>
+              Name -{" "}
+              <span className="font-semibold">{userData?.fullName}</span>
+            </p>
+            <p>
+              Email -{" "}
+              <span className="font-semibold">{userData?.email}</span>
+            </p>
+            {/* <p>Mobile No - 9898989898</p> */}
           </div>
         </div>
       </div>

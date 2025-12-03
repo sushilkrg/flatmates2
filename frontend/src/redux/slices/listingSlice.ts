@@ -12,6 +12,7 @@ export type Listing = {
   isFeatured: boolean;
   contactNumber: string;
   contactEmail: string;
+  imageUrl: string;
   facilities: string[];
   bookmarkedBy: string[];
   createdAt: string; // or Date if you convert
