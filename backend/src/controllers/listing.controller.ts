@@ -141,7 +141,10 @@ export const getBookmarkedListings = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user?._id.toString();
 
-    const user = await User.findById(userId).populate("myBookmarkedListings");
+    const user = await User.findById(userId).populate({
+      path: "myBookmarkedListings",
+      options: { sort: { createdAt: -1 } },
+    });
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
@@ -196,7 +199,10 @@ export const deleteListing = async (req: Request, res: Response) => {
 export const getMyListings = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user?._id.toString();
-    const user = await User.findById(userId).populate("myListings");
+    const user = await User.findById(userId).populate({
+      path: "myListings",
+      options: { sort: { createdAt: -1 } },
+    });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });

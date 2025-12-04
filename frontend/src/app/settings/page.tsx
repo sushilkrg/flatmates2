@@ -5,7 +5,7 @@ const Settings = () => {
   const [theme, setTheme] = useState("light");
 
   return (
-    <div className="bg-white text-black w-full min-h-screen py-8 md:px-8 px-6 shadow">
+    <div className="bg-white text-black w-full min-h-screen py-8 md:px-18 px-6 shadow">
       <div className="container mx-auto">
         <h2 className="text-2xl font-bold pb-8">Settings page</h2>
         <h3 className="text-xl font-bold">Account & Profile</h3>

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Stripe from "stripe";
 import Listing from "../models/Listing";
 import Transaction from "../models/Transaction";
+import User from "../models/User";
 // import stripe from "stripe";
 // const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 //   apiVersion: "2025-09-30.clover" // use your current Stripe API version
@@ -95,7 +96,7 @@ export const stripeWebhook = async (req: Request, res: Response) => {
     await Listing.findByIdAndUpdate(listingId, { isFeatured: true });
 
     // Save transaction details
-    await Transaction.create({
+    const newTransaction = await Transaction.create({
       userId,
       listingId,
       amount: session.amount_total ? session.amount_total / 100 : 0,
@@ -103,7 +104,37 @@ export const stripeWebhook = async (req: Request, res: Response) => {
       stripeSessionId: session.id,
       paymentIntentId: session.payment_intent as string,
     });
+
+    // Update transactionId to User transactions
+    await User.findByIdAndUpdate(
+      userId,
+      { $push: { myTransactions: newTransaction._id } },
+      { new: true }
+    );
   }
 
   res.json({ received: true });
+};
+
+export const getMyTransactions = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user?._id.toString();
+    const user = await User.findById(userId).populate({
+      path: "myTransactions",
+      options: { sort: { createdAt: -1 } },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const myTransactions = user?.myTransactions;
+    if (myTransactions?.length === 0) {
+      return res.status(200).json([]);
+    }
+
+    return res.status(200).json(myTransactions);
+  } catch (err) {
+    console.error("Error in getMyTransactions", err);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
 };
