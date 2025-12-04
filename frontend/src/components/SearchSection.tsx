@@ -3,28 +3,41 @@ import React, { useState } from "react";
 // import { setLocation } from "../redux-store/locationSlice";
 import { useDispatch } from "react-redux";
 import axios from "axios";
+import { setListings } from "@/redux/slices/listingSlice";
+import { useRouter } from "next/navigation";
+import { setFilters } from "@/redux/slices/filterSlice";
 // import { LISTING_API_ENDPOINT } from "../utils/constant";
 // import { setAllListings } from "../redux-store/listingSlice";
 
 const SearchSection = () => {
   const cityNames = ["Noida", "Gurgaon", "Chennai", "Bangalore", "Hyderabad"];
-  const [cityName, setCityName] = useState("");
+  const [location, setLocation] = useState("");
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const handleClick = (e: any) => {
-    setCityName(e.target.innerText);
+    setLocation(e.target.innerText);
     // dispatch(setLocation(e.target.innerText));
+    dispatch(setFilters({ [e.target.name]: e.target.value }));
   };
 
   const handleSearch = async (e: any) => {
     e.preventDefault();
-    // try {
-    //     const res = await axios.get(`${LISTING_API_ENDPOINT}/search/${cityName}`);
-    //     dispatch(setAllListings(res?.data?.filteredListings));
-    //     dispatch(setLocation(cityName));
-    // } catch (error) {
-    //     console.error(error);
-    // }
+    try {
+      //no need to call api here search page will automatically call search api based on location in filter section 
+      
+      // const res = await axios.get(`/api/v1/listing/search/${cityName}`);
+      // if (!res) throw new Error("Request failed");
+      // console.log("res is - ", res);
+
+      // const data = res?.data.results;
+      // dispatch(setListings(data));
+      dispatch(setFilters({ [e.target.name]: e.target.value }));
+      router.push("/search");
+      // console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -37,12 +50,14 @@ const SearchSection = () => {
           <input
             type="text"
             placeholder="Enter City Name"
-            value={cityName}
+            value={location}
             className="p-3 border bg-white text-black rounded-md w-full md:w-1/2 focus:outline-none focus:border-blue-400"
-            onChange={(e) => setCityName(e.target.value)}
+            onChange={(e) => setLocation(e.target.value)}
           />
           <button
-            onClick={handleSearch}
+            name="location"
+            value={location}
+            onClick={(e) => handleSearch(e)}
             className="bg-blue-600 text-white py-3 px-6 rounded-md shadow-md w-full md:w-auto cursor-pointer"
           >
             Search
@@ -51,8 +66,10 @@ const SearchSection = () => {
         <div className="text-center mt-4 space-x-1">
           {cityNames?.map((city, index) => (
             <button
-              onClick={handleClick}
+              name="location"
+              onClick={(e) => handleClick(e)}
               key={index}
+              value={city}
               className="bg-[#325074]  py-1 px-4 rounded-full shadow-md cursor-pointer w-auto mt-1"
             >
               {city}

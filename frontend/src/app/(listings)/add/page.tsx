@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { store } from "@/redux/store";
+import toast from "react-hot-toast";
 
 interface ListingForm {
   postedByName: string;
@@ -37,7 +38,7 @@ const AddListingPage: React.FC = () => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   const user = useSelector((store: any) => store?.auth?.user);
-    console.log("user in add listing -", user);
+  console.log("user in add listing -", user);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -64,75 +65,76 @@ const AddListingPage: React.FC = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setLoading(true);
+    e.preventDefault();
+    setLoading(true);
 
-  try {
-    let uploadedImage = imageUrl;
+    try {
+      let uploadedImage = imageUrl;
 
-    // ✅ 1. Upload image to Cloudinary (if needed)
-    // If you want real cloudinary upload do this:
-    // const formImageData = new FormData();
-    // formImageData.append("file", formData.uploadImage);
-    // formImageData.append("upload_preset", "your_preset");
-    // const imgUploadRes = await axios.post("cloudinary-upload-url", formImageData);
-    // uploadedImage = imgUploadRes.data.secure_url;
+      // ✅ 1. Upload image to Cloudinary (if needed)
+      // If you want real cloudinary upload do this:
+      // const formImageData = new FormData();
+      // formImageData.append("file", formData.uploadImage);
+      // formImageData.append("upload_preset", "your_preset");
+      // const imgUploadRes = await axios.post("cloudinary-upload-url", formImageData);
+      // uploadedImage = imgUploadRes.data.secure_url;
 
-    // ✅ 2. ALWAYS create the listing with isFeatured: false
-    const listingRes = await axios.post(
-      // "http://localhost:5000/api/v1/listing/add",
-      // `${process.env.NEXT_PUBLIC_API_BASE_URL}/listing/add`,
-      `/api/v1/listing/add`,
-      {
-        postedByName: formData?.postedByName,
-        location: formData?.location,
-        cityName: formData?.cityName,
-        rent: formData?.rent,
-        lookingForGender: formData?.lookingForGender,
-        accommodationType: formData?.accommodationType,
-        contactNumber: formData?.contactNumber,
-        contactEmail: formData?.contactEmail,
-        facilities: formData?.facilities,
-        imageUrl: uploadedImage,
-        isFeatured: false, // ✅ Always false
-      },
-      { withCredentials: true }
-    );
-
-    console.log("listingRes-", listingRes);
-    
-    const listingId = listingRes.data.newListing._id;
-
-    // ✅ 3. If Featured → Start Stripe Checkout (with listingId)
-    if (isFeatured) {
-      const checkoutRes = await axios.post(
-        // "http://localhost:5000/api/v1/transaction/create-checkout-session",
-        // `${process.env.NEXT_PUBLIC_API_BASE_URL}/transaction/create-checkout-session`,
-        `/api/v1/transaction/create-checkout-session`,
+      // ✅ 2. ALWAYS create the listing with isFeatured: false
+      const listingRes = await axios.post(
+        // "http://localhost:5000/api/v1/listing/add",
+        // `${process.env.NEXT_PUBLIC_API_BASE_URL}/listing/add`,
+        `/api/v1/listing/add`,
         {
-          amount: 199,
-          listingId,
+          postedByName: formData?.postedByName,
+          location: formData?.location,
+          cityName: formData?.cityName,
+          rent: formData?.rent,
+          lookingForGender: formData?.lookingForGender,
+          accommodationType: formData?.accommodationType,
+          contactNumber: formData?.contactNumber,
+          contactEmail: formData?.contactEmail,
+          facilities: formData?.facilities,
+          imageUrl: uploadedImage,
+          isFeatured: false, // ✅ Always false
         },
-      { withCredentials: true }
-    );
+        { withCredentials: true }
+      );
 
+      console.log("listingRes-", listingRes);
 
-      // ✅ Stripe URL returned → redirect user
-      window.location.href = checkoutRes.data.url;
-      console.log("Stripe session response:", checkoutRes.data);
-      // return;
+      const listingId = listingRes.data.newListing._id;
+
+      // ✅ 3. If Featured → Start Stripe Checkout (with listingId)
+      if (isFeatured) {
+        const checkoutRes = await axios.post(
+          // "http://localhost:5000/api/v1/transaction/create-checkout-session",
+          // `${process.env.NEXT_PUBLIC_API_BASE_URL}/transaction/create-checkout-session`,
+          `/api/v1/transaction/create-checkout-session`,
+          {
+            amount: 199,
+            listingId,
+          },
+          { withCredentials: true }
+        );
+
+        // ✅ Stripe URL returned → redirect user
+        window.location.href = checkoutRes.data.url;
+        console.log("Stripe session response:", checkoutRes.data);
+        // return;
+      }
+
+      // ✅ 4. If normal listing → success message
+      toast.success("Listing created successfully!", {
+        duration: 3000,
+      });
+      // alert("Listing created successfully!");
+    } catch (error: any) {
+      console.log("Add listing error:", error);
+      alert(error.response?.data?.message || "Something went wrong!");
+    } finally {
+      setLoading(false);
     }
-
-    // ✅ 4. If normal listing → success message
-    alert("Listing created successfully!");
-    
-  } catch (error: any) {
-    console.log("Add listing error:", error);
-    alert(error.response?.data?.message || "Something went wrong!");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div className="max-w-lg mx-auto mt-8">

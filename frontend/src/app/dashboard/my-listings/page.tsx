@@ -3,6 +3,7 @@ import ListingCard from "@/components/ListingCard";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const page = () => {
   const [myListings, setMyListings] = useState([]);
@@ -20,6 +21,9 @@ const page = () => {
         setIsDeleted(!isDeleted);
       }
       console.log("delete res - ", res?.data);
+      toast.success(res.data.message, {
+        duration: 2000,
+      });
     }
   };
 

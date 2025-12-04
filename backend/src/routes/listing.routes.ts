@@ -22,6 +22,6 @@ router.get("/bookmarks", isAuthenticated, getBookmarkedListings);
 router.delete("/:id", isAuthenticated, deleteListing);
 router.get("/mylistings", isAuthenticated, getMyListings);
 router.get("/search/:location", searchByLocation);
-router.get("/search/", getFilteredListings);
+router.get("/filter", getFilteredListings);
 
 export default router;

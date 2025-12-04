@@ -202,6 +202,9 @@ export const getMyListings = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "User not found" });
     }
     const myListings = user?.myListings;
+    if (myListings?.length === 0) {
+      return res.status(200).json([]);
+    }
 
     return res.status(200).json(myListings);
   } catch (err) {
@@ -225,7 +228,8 @@ export const searchByLocation = async (req: Request, res: Response) => {
     });
 
     if (!listings || listings.length === 0) {
-      return res.status(404).json({ message: "No listings found" });
+      // return res.status(404).json({ message: "No listings found" });
+      return res.status(200).json({ count: 0, results: [] });
     }
 
     return res.status(200).json({
@@ -266,7 +270,10 @@ export const getFilteredListings = async (req: Request, res: Response) => {
     const listings = await Listing.find(filter).sort({ createdAt: -1 });
 
     if (!listings || listings.length === 0) {
-      return res.status(404).json({ message: "No listings" });
+      // return res.status(404).json({ message: "No listings" });
+      return res
+        .status(200)
+        .json({ count: 0, results: [], message: "No listings" });
     }
 
     return res.status(200).json({

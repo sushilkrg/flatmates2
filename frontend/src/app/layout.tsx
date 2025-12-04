@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import ReduxProvider from "@/redux/reduxProvider";
 import Footer from "@/components/Footer";
+import { Toaster } from "react-hot-toast";
 // import { ReduxProvider } from "@/redux/reduxProvider";
 
 const geistSans = Geist({
@@ -34,6 +35,29 @@ export default function RootLayout({
         <ReduxProvider>
           <Navbar />
           <main className="grow">{children}</main>
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                background: "#1f2937",
+                color: "#fff",
+                border: "1px solid #374151",
+              },
+              success: {
+                iconTheme: {
+                  primary: "#10b981",
+                  secondary: "#fff",
+                },
+              },
+              error: {
+                iconTheme: {
+                  primary: "#ef4444",
+                  secondary: "#fff",
+                },
+              },
+            }}
+          />
         </ReduxProvider>
         <Footer />
       </body>
