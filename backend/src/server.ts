@@ -12,6 +12,7 @@ import transactionRoutes from "./routes/transaction.routes";
 // import { stripeWebhook } from "./controllers/transaction.controller";
 import connectDB from "./config/db";
 import { stripeWebhook } from "./controllers/transaction.controller";
+import { apiLimiter } from "./middlewares/rateLimiter";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -20,7 +21,11 @@ cloudinary.config({
 });
 const app = express();
 
-// import app from "./app";
+// IMPORTANT for Render/Vercel/Proxies
+app.set("trust proxy", 1);
+
+// Global IP based rate limiter
+app.use(apiLimiter);
 
 app.use(
   cors({
@@ -31,11 +36,7 @@ app.use(
 
 // app.use(cors(corsOptions));
 
-app.post(
-  "/webhook",
-  express.raw({ type: "application/json" }),
-  stripeWebhook
-);
+app.post("/webhook", express.raw({ type: "application/json" }), stripeWebhook);
 
 console.log("Stripe key in server.ts-", process.env.STRIPE_SECRET_KEY);
 

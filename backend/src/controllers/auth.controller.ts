@@ -80,8 +80,8 @@ export const logout = async (req: Request, res: Response) => {
   try {
     res.cookie("token", "", {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       path: "/",
       expires: new Date(0),
     });
