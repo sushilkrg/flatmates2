@@ -1,14 +1,15 @@
 "use client";
-import { axiosClient } from "@/lib/axiosClient";
+import api from "@/utils/axiosClient";
 import { setUser } from "@/redux/slices/authSlice";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import toast from "react-hot-toast";
 
 const Register = () => {
-  const [name, setName] = useState("");
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -18,29 +19,23 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      alert("Password do not match");
+      // alert("Password do not match");
+      toast.error("Password does not match");
       return;
     }
     try {
-      // const res = await axiosClient.post("/auth/signup", {
-      //   body: JSON.stringify({
-      //     name,
-      //     email,
-      //     password,
-      //   }),
-      // });
-      const result = await axios.post(
-        // "http://localhost:5000/api/v1/auth/login",
-        // `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/signup`,
-        `/api/vi/auth/signup`,
+      // const result = await axios.post(
+      //   `/api/vi/auth/signup`,
+      const result = await api.post(
+        `/auth/signup`,
         {
-          name,
+          fullName,
           email,
           password,
         },
         {
           headers: { "Content-Type": "application/json" },
-          withCredentials: true,
+          // withCredentials: true,
         }
       );
       // const data = await res.json();
@@ -49,14 +44,16 @@ const Register = () => {
       //   throw new Error(data.error || "Registration failed");
       // }
 
-      console.log("result-", result);
+      // console.log("result-", result);
       dispatch(setUser(result.data));
-      if (result?.status !== 200) {
-        console.log(result);
-      } else {
-        router.push("/search");
-      }
-    } catch (error) {
+      toast.success("User created successfully");
+      router.push("/search");
+      // if (result?.status !== 201) {
+      //   console.log(result);
+      // } else {
+      // }
+    } catch (error: any) {
+      toast.error(error?.response?.data.error);
       console.log(error);
     }
   };
@@ -73,14 +70,17 @@ const Register = () => {
         </p>
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="name" className="block font-semibold text-gray-700">
-              Name
+            <label
+              htmlFor="fullName"
+              className="block font-semibold text-gray-700"
+            >
+              Full name
             </label>
             <input
               type="text"
-              name="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              name="fullName"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
               placeholder="Enter your full name"
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"

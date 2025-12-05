@@ -136,6 +136,7 @@
 
 "use client";
 import ListingCard from "@/components/ListingCard";
+import api from "@/utils/axiosClient";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -186,7 +187,10 @@ const MyListingsPage = () => {
     const getMyListings = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`/api/v1/listing/mylistings`, {
+        // const res = await axios.get(`/api/v1/listing/mylistings`, {
+        //   withCredentials: true,
+        // });
+        const res = await api.get(`/listing/mylistings`, {
           withCredentials: true,
         });
 

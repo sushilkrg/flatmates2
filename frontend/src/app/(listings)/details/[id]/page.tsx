@@ -755,6 +755,7 @@ import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import api from "@/utils/axiosClient";
 
 type PageProps = {
   params: Promise<{
@@ -775,9 +776,14 @@ export default function ListingDetailsPage({ params }: PageProps) {
   useEffect(() => {
     const fetchListing = async () => {
       try {
-        const res = await axios.get(`/api/v1/listing/details/${id}`, {
-          withCredentials: true,
-        });
+        const res = await api.get(`/listing/details/${id}`
+        //   , {
+        //   withCredentials: true,
+        // }
+      );
+        // const res = await axios.get(`/api/v1/listing/details/${id}`, {
+        //   withCredentials: true,
+        // });
         if (!res) throw new Error("Failed to fetch");
         const data = await res.data.listingDetails;
         console.log("data - ", data);
@@ -808,11 +814,16 @@ export default function ListingDetailsPage({ params }: PageProps) {
     const previousBookmarkState = isBookmarked;
 
     try {
-      const result = await axios.patch(
-        `/api/v1/listing/bookmark/${listingId}`,
-        {},
-        { withCredentials: true }
+      const result = await api.patch(
+        `/listing/bookmark/${listingId}`,
+        {}
+        // { withCredentials: true }
       );
+      // const result = await axios.patch(
+      //   `/api/v1/listing/bookmark/${listingId}`,
+      //   {},
+      //   { withCredentials: true }
+      // );
 
       // Sync with API response
       const newBookmarkState = result.data.isBookmarked;

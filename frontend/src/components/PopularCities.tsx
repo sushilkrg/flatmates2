@@ -1,5 +1,7 @@
 "use client";
+import { setFilters } from "@/redux/slices/filterSlice";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 // import { setLocation } from "../redux-store/locationSlice";
@@ -68,12 +70,18 @@ const cities = [
 ];
 
 const PopularCities = () => {
-  const [cityName, setCityName] = useState("");
   const dispatch = useDispatch();
+  const router = useRouter();
 
-  const handleClick = (e: any) => {
-    setCityName(e.target.innerText.toLowerCase());
-    // dispatch(setLocation(e.target.innerText.toLowerCase()));
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const name = e.currentTarget.name;
+    const value = e.currentTarget.value;
+
+    // console.log("name:", name);
+    // console.log("value:", value);
+
+    dispatch(setFilters({ [name]: value }));
+    router.push("/search");
   };
 
   return (
@@ -85,10 +93,12 @@ const PopularCities = () => {
         {cities.map((city, index) => (
           <button
             key={index}
+            name="location"
             onClick={handleClick}
+            value={city.name}
             // className="relative rounded-lg overflow-hidden shadow-md cursor-pointer hover:scale-105 transition-transform"
             // className="relative h-40 md:h-52 rounded-lg overflow-hidden shadow-md cursor-pointer hover:scale-105 transition-transform"
-             className="
+            className="
             relative
             h-40 md:h-64
             w-full

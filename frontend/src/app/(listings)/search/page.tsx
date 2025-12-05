@@ -128,6 +128,7 @@
 import ListingCard from "@/components/ListingCard";
 import ListingCardSkeleton from "@/components/ui/ListingCardShimmer";
 import { RootState } from "@/redux/store";
+import api from "@/utils/axiosClient";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
@@ -142,10 +143,15 @@ const SearchPage = () => {
 
   const handleBookmark = async (listingId: string) => {
     try {
-      const result = await axios.patch(
-        `/api/v1/listing/bookmark/${listingId}`,
-        { withCredentials: true }
+      const result = await api.patch(
+        `/listing/bookmark/${listingId}`
+        // ,
+        // { withCredentials: true }
       );
+      // const result = await axios.patch(
+      //   `/api/v1/listing/bookmark/${listingId}`,
+      //   { withCredentials: true }
+      // );
       console.log("Bookmark result:", result);
     } catch (error) {
       console.error("Bookmark error:", error);

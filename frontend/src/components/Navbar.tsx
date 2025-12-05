@@ -387,6 +387,7 @@ import axios from "axios";
 import { clearUser } from "@/redux/slices/authSlice";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import api from "@/utils/axiosClient";
 
 export default function Navbar() {
   const dispatch = useDispatch();
@@ -416,11 +417,16 @@ export default function Navbar() {
     const loadingToast = toast.loading("Logging out...");
 
     try {
-      const res = await axios.post(
-        `/api/v1/auth/logout`,
+      const res = await api.post(
+        `/auth/logout`,
         {},
         { withCredentials: true }
       );
+      // const res = await axios.post(
+      //   `/api/v1/auth/logout`,
+      //   {},
+      //   { withCredentials: true }
+      // );
 
       dispatch(clearUser());
       setDropdownOpen(false);
@@ -475,7 +481,7 @@ export default function Navbar() {
                 <div className="relative" ref={dropdownRef}>
                   <button
                     onClick={() => setDropdownOpen(!dropdownOpen)}
-                    className="flex items-center gap-2 bg-teal-900 text-white rounded-full px-4 py-2 hover:bg-teal-800 transition"
+                    className="flex items-center gap-2 bg-teal-900 text-white rounded-full px-4 py-2 hover:bg-teal-800 transition cursor-pointer"
                   >
                     <User size={20} />
                     <span className="font-semibold">{user?.split("@")[0]}</span>

@@ -124,6 +124,7 @@
 
 "use client";
 import ListingCard from "@/components/ListingCard";
+import api from "@/utils/axiosClient";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -142,8 +143,13 @@ const BookmarkedListingsPage = () => {
     setMySavedListings((prev) => prev.filter((l: any) => l._id !== listingId));
 
     try {
-      await axios.patch(
-        `/api/v1/listing/bookmark/${listingId}`,
+      // await axios.patch(
+      //   `/api/v1/listing/bookmark/${listingId}`,
+      //   {},
+      //   { withCredentials: true }
+      // );
+      await api.patch(
+        `/listing/bookmark/${listingId}`,
         {},
         { withCredentials: true }
       );

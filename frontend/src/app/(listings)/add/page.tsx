@@ -235,6 +235,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import api from "@/utils/axiosClient";
 
 interface ListingForm {
   postedByName: string;
@@ -299,8 +300,10 @@ const AddListingPage: React.FC = () => {
         .map((f) => f.trim())
         .filter((f) => f !== "");
 
-      const listingRes = await axios.post(
-        `/api/v1/listing/add`,
+      // const listingRes = await axios.post(
+      //   `/api/v1/listing/add`,
+      const listingRes = await api.post(
+        `/listing/add`,
         {
           postedByName: formData?.postedByName,
           location: formData?.location,
@@ -313,21 +316,30 @@ const AddListingPage: React.FC = () => {
           facilities: facilitiesArray,
           imageUrl: uploadedImage,
           isFeatured: false,
-        },
-        { withCredentials: true }
+        }
+        // ,
+        // { withCredentials: true }
       );
 
       const listingId = listingRes.data.newListing._id;
 
       if (isFeatured) {
-        const checkoutRes = await axios.post(
-          `/api/v1/transaction/create-checkout-session`,
+        const checkoutRes = await api.post(
+          `/transaction/create-checkout-session`,
           {
             amount: 199,
             listingId,
-          },
-          { withCredentials: true }
+          }
+          // { withCredentials: true }
         );
+        // const checkoutRes = await axios.post(
+        //   `/api/v1/transaction/create-checkout-session`,
+        //   {
+        //     amount: 199,
+        //     listingId,
+        //   },
+        //   { withCredentials: true }
+        // );
 
         window.location.href = checkoutRes.data.url;
       } else {

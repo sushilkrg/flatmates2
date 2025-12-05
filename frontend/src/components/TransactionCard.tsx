@@ -156,14 +156,14 @@ const TransactionCard = ({ transaction }: TransactionCardProps) => {
         <div className="bg-gray-900/30 rounded-lg p-3 border border-gray-700/30">
           <p className="text-xs text-gray-400 mb-1">Listing ID</p>
           <p className="text-xs font-mono text-gray-200 truncate">
-            {transaction.listingId.slice(0, 8)}...
+            {transaction.listingId.slice(0, 12)}...
           </p>
         </div>
 
         <div className="bg-gray-900/30 rounded-lg p-3 border border-gray-700/30">
           <p className="text-xs text-gray-400 mb-1">User ID</p>
           <p className="text-xs font-mono text-gray-200 truncate">
-            {transaction.userId.slice(0, 8)}...
+            {transaction.userId.slice(0, 12)}...
           </p>
         </div>
       </div>

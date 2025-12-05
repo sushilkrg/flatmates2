@@ -1,7 +1,7 @@
 "use client";
-import { axiosClient } from "@/lib/axiosClient";
 import { setUser } from "@/redux/slices/authSlice";
 import { store } from "@/redux/store";
+import api from "@/utils/axiosClient";
 import axios from "axios";
 // import { signIn } from "next-auth/react";
 import Link from "next/link";
@@ -21,16 +21,14 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      // const result = await axiosClient.post("/auth/login", {
-      //   email,
-      //   password,
-      //   // redirect: false,
-      // });
-
-      const result = await axios.post(
+      // const result = await axios.post(
+      //   // "http://localhost:5000/api/v1/auth/login",
+      //   // `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`,
+      //   `/api/v1/auth/login`,
+      const result = await api.post(
         // "http://localhost:5000/api/v1/auth/login",
         // `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`,
-        `/api/v1/auth/login`,
+        `/auth/login`,
         {
           email,
           password,
@@ -38,7 +36,7 @@ const Login = () => {
         },
         {
           headers: { "Content-Type": "application/json" },
-          withCredentials: true,
+          // withCredentials: true,
         }
       );
 

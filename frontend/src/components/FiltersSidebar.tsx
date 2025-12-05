@@ -336,6 +336,7 @@ import {
   clearListings,
 } from "@/redux/slices/listingSlice";
 import { RootState } from "@/redux/store";
+import api from "@/utils/axiosClient";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -392,13 +393,17 @@ export default function FiltersSidebar() {
       }
 
       const queryString = params.toString();
-      const url = `/api/v1/listing/filter${
+      const url = `/listing/filter${
         queryString ? `?${queryString}` : ""
       }`;
+      // const url = `/api/v1/listing/filter${
+      //   queryString ? `?${queryString}` : ""
+      // }`;
 
       console.log("Fetching with URL:", url);
 
-      const res = await axios.get(url);
+      // const res = await axios.get(url);
+      const res = await api.get(url);
 
       if (!res || !res.data) throw new Error("Request failed");
 
@@ -426,7 +431,7 @@ export default function FiltersSidebar() {
   };
 
   const handleSearch = () => {
-    console.log("Searching with filters:", filters);
+    // console.log("Searching with filters:", filters);
     fetchFilteredListings();
   };
 
