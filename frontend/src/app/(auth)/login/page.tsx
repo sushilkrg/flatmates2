@@ -7,6 +7,7 @@ import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 
 const Login = () => {
@@ -42,12 +43,13 @@ const Login = () => {
 
       console.log("result-", result);
       dispatch(setUser(result.data));
-      if (result?.status !== 200) {
-        console.log(result);
-      } else {
-        router.push("/search");
-      }
-    } catch (error) {
+      router.push("/search");
+      // if (result?.status !== 200) {
+      //   console.log(result);
+      // } else {
+      // }
+    } catch (error: any) {
+      toast.error(error?.response?.data?.error);
       console.log(error);
     }
 
