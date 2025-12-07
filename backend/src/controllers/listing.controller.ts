@@ -292,6 +292,76 @@ export const searchByLocation = async (req: Request, res: Response) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+// export const getFilteredListings = async (req: Request, res: Response) => {
+//   try {
+//     const {
+//       location,
+//       cityName,
+//       rent,
+//       accommodationType,
+//       lookingForGender,
+//       page: queryPage,
+//       limit: queryLimit,
+//     } = req.query;
+
+//     const page = parseInt(queryPage as string) || 1;
+//     const limit = parseInt(queryLimit as string) || 15;
+//     const skip = (page - 1) * limit;
+
+//     const filter: any = {};
+
+//     if (location) {
+//       filter.location = { $regex: new RegExp(location as string, "i") };
+//     }
+//     if (cityName) {
+//       filter.cityName = { $regex: new RegExp(cityName as string, "i") };
+//     }
+//     if (rent) {
+//       const rentValue = Number(rent);
+//       if (!isNaN(rentValue)) {
+//         filter.rent = { $lte: rentValue };
+//       }
+//     }
+//     if (accommodationType) {
+//       filter.accommodationType = accommodationType;
+//     }
+//     if (lookingForGender) {
+//       filter.lookingForGender = lookingForGender;
+//     }
+
+//     const totalListings = await Listing.countDocuments(filter);
+
+//     // Featured listings first, then by creation date
+//     const listings = await Listing.find(filter)
+//       .sort({ isFeatured: -1, createdAt: -1 })
+//       .skip(skip)
+//       .limit(limit);
+
+//     const totalPages = Math.ceil(totalListings / limit);
+//     const hasNextPage = page < totalPages;
+//     const hasPrevPage = page > 1;
+
+//     return res.status(200).json({
+//       success: true,
+//       count: listings.length,
+//       pagination: {
+//         currentPage: page,
+//         totalPages,
+//         totalListings,
+//         limit,
+//         hasNextPage,
+//         hasPrevPage,
+//         nextPage: hasNextPage ? page + 1 : null,
+//         prevPage: hasPrevPage ? page - 1 : null,
+//       },
+//       results: listings,
+//     });
+//   } catch (err) {
+//     console.error("Error in getFilteredListings:", err);
+//     return res.status(500).json({ error: "Internal Server Error" });
+//   }
+// };
+
 export const getFilteredListings = async (req: Request, res: Response) => {
   try {
     const {
@@ -329,13 +399,28 @@ export const getFilteredListings = async (req: Request, res: Response) => {
       filter.lookingForGender = lookingForGender;
     }
 
+    // Get total count for pagination
     const totalListings = await Listing.countDocuments(filter);
 
-    // Featured listings first, then by creation date
-    const listings = await Listing.find(filter)
-      .sort({ isFeatured: -1, createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
+    // Use aggregation to efficiently sort featured first, then by date
+    const listings = await Listing.aggregate([
+      { $match: filter },
+      {
+        $addFields: {
+          // Create a sort field: 0 for featured, 1 for non-featured
+          sortOrder: { $cond: [{ $eq: ["$isFeatured", true] }, 0, 1] },
+        },
+      },
+      {
+        $sort: {
+          sortOrder: 1, // Featured first (0 comes before 1)
+          createdAt: -1, // Then by newest
+        },
+      },
+      { $skip: skip },
+      { $limit: limit },
+      { $project: { sortOrder: 0 } }, // Remove temporary field from results
+    ]);
 
     const totalPages = Math.ceil(totalListings / limit);
     const hasNextPage = page < totalPages;
