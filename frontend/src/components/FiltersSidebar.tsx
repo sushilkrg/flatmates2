@@ -696,7 +696,7 @@ export default function FiltersSidebar() {
           <option value="">Any</option>
           <option value="flatmate">Flatmate</option>
           <option value="roommate">Roommate</option>
-          <option value="pg">PG</option>
+          {/* <option value="pg">PG</option> */}
         </select>
       </div>
 
