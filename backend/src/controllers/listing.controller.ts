@@ -5,12 +5,37 @@ import User from "../models/User";
 
 export const getAllListings = async (req: Request, res: Response) => {
   try {
-    const listings = await Listing.find().sort({ createdAt: -1 });
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 15;
+    const skip = (page - 1) * limit;
 
-    if (listings.length === 0) {
-      return res.status(200).json([]);
-    }
-    return res.status(200).json(listings);
+    const totalListings = await Listing.countDocuments();
+
+    // Sort: Featured first (isFeatured: -1), then by creation date (createdAt: -1)
+    const listings = await Listing.find()
+      .sort({ isFeatured: -1, createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const totalPages = Math.ceil(totalListings / limit);
+    const hasNextPage = page < totalPages;
+    const hasPrevPage = page > 1;
+
+    return res.status(200).json({
+      success: true,
+      count: listings.length,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalListings,
+        limit,
+        hasNextPage,
+        hasPrevPage,
+        nextPage: hasNextPage ? page + 1 : null,
+        prevPage: hasPrevPage ? page - 1 : null,
+      },
+      results: listings,
+    });
   } catch (error) {
     console.error("Error in getAllListings", error);
     return res.status(500).json({ error: "Internal Server Error" });
@@ -221,36 +246,67 @@ export const getMyListings = async (req: Request, res: Response) => {
 export const searchByLocation = async (req: Request, res: Response) => {
   try {
     const { location } = req.params;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 15;
+
     if (!location || location.trim() === "") {
       return res.status(400).json({ error: "Location is required" });
     }
 
-    // Case-insensitive search using RegExp
+    const skip = (page - 1) * limit;
     const regex = new RegExp(location, "i");
 
-    // match with either cityName or location
-    const listings = await Listing.find({
+    const query = {
       $or: [{ location: regex }, { cityName: regex }],
-    });
+    };
 
-    if (!listings || listings.length === 0) {
-      // return res.status(404).json({ message: "No listings found" });
-      return res.status(200).json({ count: 0, results: [] });
-    }
+    const totalListings = await Listing.countDocuments(query);
+
+    // Featured listings first, then by creation date
+    const listings = await Listing.find(query)
+      .sort({ isFeatured: -1, createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const totalPages = Math.ceil(totalListings / limit);
+    const hasNextPage = page < totalPages;
+    const hasPrevPage = page > 1;
 
     return res.status(200).json({
+      success: true,
       count: listings.length,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalListings,
+        limit,
+        hasNextPage,
+        hasPrevPage,
+        nextPage: hasNextPage ? page + 1 : null,
+        prevPage: hasPrevPage ? page - 1 : null,
+      },
       results: listings,
     });
   } catch (err) {
-    console.error("Error");
+    console.error("Error in searchByLocation", err);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 export const getFilteredListings = async (req: Request, res: Response) => {
   try {
-    const { location, cityName, rent, accommodationType, lookingForGender } =
-      req.query;
+    const {
+      location,
+      cityName,
+      rent,
+      accommodationType,
+      lookingForGender,
+      page: queryPage,
+      limit: queryLimit,
+    } = req.query;
+
+    const page = parseInt(queryPage as string) || 1;
+    const limit = parseInt(queryLimit as string) || 15;
+    const skip = (page - 1) * limit;
 
     const filter: any = {};
 
@@ -273,17 +329,31 @@ export const getFilteredListings = async (req: Request, res: Response) => {
       filter.lookingForGender = lookingForGender;
     }
 
-    const listings = await Listing.find(filter).sort({ createdAt: -1 });
+    const totalListings = await Listing.countDocuments(filter);
 
-    if (!listings || listings.length === 0) {
-      // return res.status(404).json({ message: "No listings" });
-      return res
-        .status(200)
-        .json({ count: 0, results: [], message: "No listings" });
-    }
+    // Featured listings first, then by creation date
+    const listings = await Listing.find(filter)
+      .sort({ isFeatured: -1, createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const totalPages = Math.ceil(totalListings / limit);
+    const hasNextPage = page < totalPages;
+    const hasPrevPage = page > 1;
 
     return res.status(200).json({
+      success: true,
       count: listings.length,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalListings,
+        limit,
+        hasNextPage,
+        hasPrevPage,
+        nextPage: hasNextPage ? page + 1 : null,
+        prevPage: hasPrevPage ? page - 1 : null,
+      },
       results: listings,
     });
   } catch (err) {

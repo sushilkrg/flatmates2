@@ -386,7 +386,7 @@
 
 "use client";
 
-import { Listing } from "@/redux/slices/listingSlice";
+// import { Listing } from "@/redux/slices/listingSlice";
 import { RootState } from "@/redux/store";
 import Image from "next/image";
 import { ReactNode, useState } from "react";
@@ -404,7 +404,8 @@ type ActionButton = {
 };
 
 type ListingCardProps = {
-  listing: Listing;
+  listing: any;
+  // listing: Listing;
   primaryAction?: ActionButton;
   secondaryAction?: ActionButton;
 };
@@ -554,7 +555,7 @@ const ListingCard = ({
           {/* Facilities */}
           {listing.facilities.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
-              {listing.facilities.slice(0, 3).map((facility) => (
+              {listing.facilities.slice(0, 3).map((facility: any) => (
                 <span
                   key={facility}
                   className="text-xs bg-gray-700/40 text-gray-300 px-2 py-0.5 rounded"
@@ -592,7 +593,7 @@ const ListingCard = ({
           {secondaryAction && (
             <button
               onClick={handleSecondaryAction}
-              className="flex-1 flex items-center justify-center gap-2 bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-4 py-2.5 rounded-lg cursor-pointer font-medium text-sm transition-all duration-200 shadow-md hover:shadow-lg"
+              className="flex-1 flex items-center justify-center gap-2 bg-linear-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-4 py-2.5 rounded-lg cursor-pointer font-medium text-sm transition-all duration-200 shadow-md hover:shadow-lg"
             >
               {secondaryAction.icon}
               {secondaryAction.label}

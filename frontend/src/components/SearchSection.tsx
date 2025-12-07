@@ -3,9 +3,10 @@ import React, { useState } from "react";
 // import { setLocation } from "../redux-store/locationSlice";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import { setListings } from "@/redux/slices/listingSlice";
+import { setError, setListings } from "@/redux/slices/listingSlice";
 import { useRouter } from "next/navigation";
 import { setFilters } from "@/redux/slices/filterSlice";
+import api from "@/utils/axiosClient";
 // import { LISTING_API_ENDPOINT } from "../utils/constant";
 // import { setAllListings } from "../redux-store/listingSlice";
 
@@ -24,19 +25,42 @@ const SearchSection = () => {
   const handleSearch = async (e: any) => {
     e.preventDefault();
     try {
-      //no need to call api here search page will automatically call search api based on location in filter section 
-      
+      //no need to call api here search page will automatically call search api based on location in filter section
+
       // const res = await axios.get(`/api/v1/listing/search/${cityName}`);
       // if (!res) throw new Error("Request failed");
       // console.log("res is - ", res);
 
       // const data = res?.data.results;
       // dispatch(setListings(data));
+      const params = new URLSearchParams();
+
+      // Add pagination defaults
+      params.append("page", "1"); // Reset to page 1 on new search
+      params.append("limit", "15");
+
+      params.append("location", location.trim());
+
+      const res = await api.get(`/listing/filter?${params.toString()}`);
+
+      if (!res || !res.data) throw new Error("Request failed");
+
+      // Update listings with pagination data
+      dispatch(
+        setListings({
+          results: res?.data.results || [],
+          pagination: res.data.pagination,
+        })
+      );
+
+      console.log("Fetched listings in searchsec:", res?.data);
       dispatch(setFilters({ [e.target.name]: e.target.value }));
-      router.push("/search");
-      // console.log(data);
-    } catch (error) {
-      console.error(error);
+      router.push("/search?page=1");
+    } catch (error: any) {
+      console.error("Search error:", error);
+      dispatch(
+        setError(error?.response?.data?.message || "Failed to fetch listings")
+      );
     }
   };
 

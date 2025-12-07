@@ -327,6 +327,216 @@
 //   );
 // }
 
+// "use client";
+// import { resetFilters, setFilters } from "@/redux/slices/filterSlice";
+// import {
+//   setListings,
+//   setLoading,
+//   setError,
+//   clearListings,
+// } from "@/redux/slices/listingSlice";
+// import { RootState } from "@/redux/store";
+// import api from "@/utils/axiosClient";
+// import axios from "axios";
+// import { useEffect, useState } from "react";
+// import { useDispatch, useSelector } from "react-redux";
+
+// export default function FiltersSidebar() {
+//   const dispatch = useDispatch();
+//   const filters = useSelector((state: RootState) => state.filters);
+//   const [debouncedQuery, setDebouncedQuery] = useState("");
+
+//   // Debounce location input for auto-search
+//   // useEffect(() => {
+//   //   const handler = setTimeout(() => {
+//   //     setDebouncedQuery(filters.location.trim());
+//   //   }, 2000); // 2 seconds
+
+//   //   return () => clearTimeout(handler);
+//   // }, [filters.location]);
+
+//   // Auto-fetch when location is debounced
+//   // useEffect(() => {
+//   //   if (!debouncedQuery) {
+//   //     console.log("No search query");
+//   //     return;
+//   //   }
+
+//   //   fetchFilteredListings({ location: debouncedQuery });
+//   // }, [debouncedQuery]);
+
+//   // Function to fetch filtered listings
+//   const fetchFilteredListings = async (customFilters?: any) => {
+//     try {
+//       dispatch(setLoading(true));
+
+//       // Use custom filters or current filters from Redux
+//       const filtersToApply = customFilters || filters;
+
+//       // Build query params
+//       const params = new URLSearchParams();
+
+//       if (filtersToApply.location) {
+//         params.append("location", filtersToApply.location);
+//       }
+//       if (filtersToApply.cityName) {
+//         params.append("cityName", filtersToApply.cityName);
+//       }
+//       if (filtersToApply.rent) {
+//         params.append("rent", filtersToApply.rent.toString());
+//       }
+//       if (filtersToApply.accommodationType) {
+//         params.append("accommodationType", filtersToApply.accommodationType);
+//       }
+//       if (filtersToApply.lookingForGender) {
+//         params.append("lookingForGender", filtersToApply.lookingForGender);
+//       }
+
+//       const queryString = params.toString();
+//       const url = `/listing/filter${
+//         queryString ? `?${queryString}` : ""
+//       }`;
+//       // const url = `/api/v1/listing/filter${
+//       //   queryString ? `?${queryString}` : ""
+//       // }`;
+
+//       console.log("Fetching with URL:", url);
+
+//       // const res = await axios.get(url);
+//       const res = await api.get(url);
+
+//       if (!res || !res.data) throw new Error("Request failed");
+
+//       const data = res?.data.results || [];
+//       dispatch(setListings(data));
+
+//       console.log("Fetched listings:", data);
+//     } catch (error: any) {
+//       console.error("Search error:", error);
+//       dispatch(
+//         setError(error?.response?.data?.message || "Failed to fetch listings")
+//       );
+//     }
+//   };
+
+//   const handleChange = (
+//     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+//   ) => {
+//     dispatch(setFilters({ [e.target.name]: e.target.value }));
+//   };
+
+//   const handleReset = () => {
+//     dispatch(resetFilters());
+//     dispatch(clearListings());
+//   };
+
+//   const handleSearch = () => {
+//     // console.log("Searching with filters:", filters);
+//     fetchFilteredListings();
+//   };
+
+//   return (
+//     <div className="border border-gray-700 bg-gray-800 p-4 rounded-lg shadow-sm space-y-4 md:sticky top-24">
+//       <div className="flex items-center justify-between">
+//         <h2 className="text-lg font-semibold text-white">Filters</h2>
+//         <button
+//           onClick={handleReset}
+//           className="bg-gray-700 text-white text-sm px-3 py-1 rounded hover:bg-gray-600 transition"
+//         >
+//           Reset
+//         </button>
+//       </div>
+
+//       <div>
+//         <label className="block text-sm font-medium text-gray-300 mb-1">
+//           Location
+//         </label>
+//         <input
+//           type="text"
+//           name="location"
+//           value={filters.location}
+//           onChange={handleChange}
+//           placeholder="e.g., Sector 54"
+//           className="border border-gray-600 bg-gray-700 text-white p-2 rounded w-full focus:outline-none focus:border-blue-500"
+//         />
+//         <p className="text-xs text-gray-500 mt-1">
+//           Auto-searches after 2 seconds
+//         </p>
+//       </div>
+
+//       <div>
+//         <label className="block text-sm font-medium text-gray-300 mb-1">
+//           City Name
+//         </label>
+//         <input
+//           type="text"
+//           name="cityName"
+//           value={filters.cityName}
+//           onChange={handleChange}
+//           placeholder="e.g., Delhi"
+//           className="border border-gray-600 bg-gray-700 text-white p-2 rounded w-full focus:outline-none focus:border-blue-500"
+//         />
+//       </div>
+
+//       <div>
+//         <label className="block text-sm font-medium text-gray-300 mb-1">
+//           Max Rent (₹)
+//         </label>
+//         <input
+//           name="rent"
+//           type="number"
+//           min={0}
+//           max={200000}
+//           value={filters.rent ?? ""}
+//           onChange={handleChange}
+//           placeholder="e.g., 15000"
+//           className="border border-gray-600 bg-gray-700 text-white p-2 rounded w-full focus:outline-none focus:border-blue-500"
+//         />
+//       </div>
+
+//       <div>
+//         <label className="block text-sm font-medium text-gray-300 mb-1">
+//           Accommodation Type
+//         </label>
+//         <select
+//           name="accommodationType"
+//           value={filters.accommodationType}
+//           onChange={handleChange}
+//           className="border border-gray-600 bg-gray-700 text-white p-2 rounded w-full focus:outline-none focus:border-blue-500"
+//         >
+//           <option value="">Any</option>
+//           <option value="flatmate">Flatmate</option>
+//           <option value="roommate">Roommate</option>
+//           <option value="pg">PG</option>
+//         </select>
+//       </div>
+
+//       <div>
+//         <label className="block text-sm font-medium text-gray-300 mb-1">
+//           Looking For Gender
+//         </label>
+//         <select
+//           name="lookingForGender"
+//           value={filters.lookingForGender}
+//           onChange={handleChange}
+//           className="border border-gray-600 bg-gray-700 text-white p-2 rounded w-full focus:outline-none focus:border-blue-500"
+//         >
+//           <option value="">Any</option>
+//           <option value="male">Male</option>
+//           <option value="female">Female</option>
+//         </select>
+//       </div>
+
+//       <button
+//         onClick={handleSearch}
+//         className="w-full bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-2 px-4 rounded transition shadow-md hover:shadow-lg"
+//       >
+//         Apply Filters
+//       </button>
+//     </div>
+//   );
+// }
+
 "use client";
 import { resetFilters, setFilters } from "@/redux/slices/filterSlice";
 import {
@@ -337,84 +547,66 @@ import {
 } from "@/redux/slices/listingSlice";
 import { RootState } from "@/redux/store";
 import api from "@/utils/axiosClient";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function FiltersSidebar() {
   const dispatch = useDispatch();
+  const router = useRouter();
   const filters = useSelector((state: RootState) => state.filters);
-  const [debouncedQuery, setDebouncedQuery] = useState("");
-
-  // Debounce location input for auto-search
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedQuery(filters.location.trim());
-    }, 2000); // 2 seconds
-
-    return () => clearTimeout(handler);
-  }, [filters.location]);
-
-  // Auto-fetch when location is debounced
-  useEffect(() => {
-    if (!debouncedQuery) {
-      console.log("No search query");
-      return;
-    }
-
-    fetchFilteredListings({ location: debouncedQuery });
-  }, [debouncedQuery]);
 
   // Function to fetch filtered listings
-  const fetchFilteredListings = async (customFilters?: any) => {
+  const fetchFilteredListings = async () => {
     try {
       dispatch(setLoading(true));
 
-      // Use custom filters or current filters from Redux
-      const filtersToApply = customFilters || filters;
-
-      // Build query params
+      // Build query params manually
       const params = new URLSearchParams();
 
-      if (filtersToApply.location) {
-        params.append("location", filtersToApply.location);
+      // Add pagination defaults
+      params.append("page", "1"); // Reset to page 1 on new search
+      params.append("limit", "15");
+
+      // Add filters only if they have values
+      if (filters.location) {
+        params.append("location", filters.location);
       }
-      if (filtersToApply.cityName) {
-        params.append("cityName", filtersToApply.cityName);
+      if (filters.cityName) {
+        params.append("cityName", filters.cityName);
       }
-      if (filtersToApply.rent) {
-        params.append("rent", filtersToApply.rent.toString());
+      if (filters.rent !== null && filters.rent !== undefined) {
+        params.append("rent", filters.rent.toString());
       }
-      if (filtersToApply.accommodationType) {
-        params.append("accommodationType", filtersToApply.accommodationType);
+      if (filters.accommodationType) {
+        params.append("accommodationType", filters.accommodationType);
       }
-      if (filtersToApply.lookingForGender) {
-        params.append("lookingForGender", filtersToApply.lookingForGender);
+      if (filters.lookingForGender) {
+        params.append("lookingForGender", filters.lookingForGender);
       }
 
-      const queryString = params.toString();
-      const url = `/listing/filter${
-        queryString ? `?${queryString}` : ""
-      }`;
-      // const url = `/api/v1/listing/filter${
-      //   queryString ? `?${queryString}` : ""
-      // }`;
-
+      const url = `/listing/filter?${params.toString()}`;
       console.log("Fetching with URL:", url);
 
-      // const res = await axios.get(url);
       const res = await api.get(url);
 
       if (!res || !res.data) throw new Error("Request failed");
 
-      const data = res?.data.results || [];
-      dispatch(setListings(data));
+      // Update listings with pagination data
+      dispatch(
+        setListings({
+          results: res.data.results || [],
+          pagination: res.data.pagination,
+        })
+      );
 
-      console.log("Fetched listings:", data);
+      console.log("Fetched listings:", res.data);
+
+      // Navigate to search page with page=1
+      router.push("/search?page=1");
     } catch (error: any) {
       console.error("Search error:", error);
       dispatch(
-        setError(error?.response?.data?.message || "Failed to fetch listings")
+        setError(error?.response?.data?.error || "Failed to fetch listings")
       );
     }
   };
@@ -428,10 +620,10 @@ export default function FiltersSidebar() {
   const handleReset = () => {
     dispatch(resetFilters());
     dispatch(clearListings());
+    router.push("/search");
   };
 
   const handleSearch = () => {
-    // console.log("Searching with filters:", filters);
     fetchFilteredListings();
   };
 
@@ -459,9 +651,6 @@ export default function FiltersSidebar() {
           placeholder="e.g., Sector 54"
           className="border border-gray-600 bg-gray-700 text-white p-2 rounded w-full focus:outline-none focus:border-blue-500"
         />
-        <p className="text-xs text-gray-500 mt-1">
-          Auto-searches after 2 seconds
-        </p>
       </div>
 
       <div>

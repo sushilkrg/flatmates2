@@ -170,8 +170,9 @@ export default function DashboardLayout({
                       transition-all duration-200
                       ${
                         isActive
-                          ? "bg-linear-to-r from-blue-500 to-purple-600 text-white shadow-lg"
-                          : "text-gray-300 hover:bg-gray-700 hover:text-white"
+                          // ? "bg-linear-to-r from-gray-500 to-gray-600 text-white shadow-lg"
+                          ? "bg-gray-600 text-white shadow-lg"
+                          : "text-gray-300 hover:bg-gray-800 hover:text-white"
                       }
                     `}
                     >

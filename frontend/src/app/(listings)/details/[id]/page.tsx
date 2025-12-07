@@ -747,7 +747,7 @@
 // app/listings/[id]/page.tsx
 "use client";
 
-import { Listing } from "@/redux/slices/listingSlice";
+// import { Listing } from "@/redux/slices/listingSlice";
 import { RootState } from "@/redux/store";
 import axios from "axios";
 import Image from "next/image";
@@ -769,18 +769,20 @@ export default function ListingDetailsPage({ params }: PageProps) {
   const user = useSelector((state: RootState) => state.auth.user);
   const isLoggedIn = !!user;
 
-  const [listing, setListing] = useState<Listing | null>(null);
+  // const [listing, setListing] = useState<Listing | null>(null);
+  const [listing, setListing] = useState<any | null>(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchListing = async () => {
       try {
-        const res = await api.get(`/listing/details/${id}`
-        //   , {
-        //   withCredentials: true,
-        // }
-      );
+        const res = await api.get(
+          `/listing/details/${id}`
+          //   , {
+          //   withCredentials: true,
+          // }
+        );
         // const res = await axios.get(`/api/v1/listing/details/${id}`, {
         //   withCredentials: true,
         // });
@@ -957,7 +959,7 @@ export default function ListingDetailsPage({ params }: PageProps) {
                 <button
                   onClick={() => handleBookmark(listing._id)}
                   disabled={!isLoggedIn}
-                  className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 ${
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 cursor-pointer ${
                     !isLoggedIn
                       ? "bg-gray-700/50 text-gray-500 cursor-not-allowed"
                       : isBookmarked
@@ -1102,7 +1104,7 @@ export default function ListingDetailsPage({ params }: PageProps) {
                   Facilities & Amenities
                 </h2>
                 <div className="flex flex-wrap gap-2">
-                  {listing.facilities.map((facility) => (
+                  {listing.facilities.map((facility: any) => (
                     <span
                       key={facility}
                       className="bg-gray-700/60 text-gray-200 text-sm px-4 py-2 rounded-lg capitalize"
