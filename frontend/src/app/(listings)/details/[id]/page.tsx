@@ -891,7 +891,7 @@ export default function ListingDetailsPage({ params }: PageProps) {
         {/* Back Button */}
         <button
           onClick={() => router.back()}
-          className="flex items-center gap-2 text-gray-300 hover:text-white mb-6 transition"
+          className="flex items-center gap-2 text-gray-300 hover:text-white mb-6 transition cursor-pointer"
         >
           <svg
             className="w-5 h-5"

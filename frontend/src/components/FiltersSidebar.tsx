@@ -718,7 +718,7 @@ export default function FiltersSidebar() {
 
       <button
         onClick={handleSearch}
-        className="w-full bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-2 px-4 rounded transition shadow-md hover:shadow-lg"
+        className="w-full bg-linear-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700  text-white font-semibold py-2 px-4 rounded transition shadow-md hover:shadow-lg cursor-pointer"
       >
         Apply Filters
       </button>

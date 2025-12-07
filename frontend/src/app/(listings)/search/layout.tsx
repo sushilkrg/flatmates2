@@ -7,11 +7,11 @@ export default function SearchLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="container mx-auto flex flex-col md:flex-row md:justify-between m-4 gap-8">
+    <div className="container mx-auto flex flex-col md:flex-row md:justify-between m-4 gap-6">
       <div className="block md:hidden">
         <FilterButton />
       </div>
-      <div className="md:w-72 hidden md:block sticky top-0 ">
+      <div className="md:w-72 hidden md:block sticky top-0 md:pl-4">
         <FiltersSidebar />
       </div>
       <div className="flex-1">{children}</div>

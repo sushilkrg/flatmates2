@@ -536,7 +536,7 @@ const AddListingPage: React.FC = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-4 py-3 rounded-lg font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full bg-linear-to-r from-gray-400 to-gray-500 hover:from-gray-500 hover:to-gray-600 text-white px-4 py-3 rounded-lg font-semibold transition disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
         >
           {loading ? "Processing..." : "Add Listing"}
         </button>
