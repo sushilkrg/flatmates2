@@ -1,3 +1,4 @@
+import FeaturedListingShowcase from "@/components/FeaturesShowcase";
 import HeroSection from "@/components/HeroSection";
 import MobileAppPromotion from "@/components/MobileAppPromotion";
 import PopularCities from "@/components/PopularCities";
@@ -11,8 +12,9 @@ export default function Home() {
       <HeroSection />
       <SearchSection />
       <PopularCities />
-      <MobileAppPromotion />
+      <FeaturedListingShowcase />
       <Testimonials />
+      <MobileAppPromotion />
     </div>
   );
 }

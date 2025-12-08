@@ -1,5 +1,7 @@
 "use client";
 import { setFilters } from "@/redux/slices/filterSlice";
+import { setError, setListings } from "@/redux/slices/listingSlice";
+import api from "@/utils/axiosClient";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -73,15 +75,45 @@ const PopularCities = () => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     const name = e.currentTarget.name;
     const value = e.currentTarget.value;
 
     // console.log("name:", name);
     // console.log("value:", value);
 
-    dispatch(setFilters({ [name]: value }));
-    router.push("/search");
+    // dispatch(setFilters({ [name]: value }));
+    // router.push("/search");
+    try {
+      const params = new URLSearchParams();
+
+      // Add pagination defaults
+      params.append("page", "1"); // Reset to page 1 on new search
+      params.append("limit", "15");
+
+      params.append("cityName", value.trim());
+
+      const res = await api.get(`/listing/filter?${params.toString()}`);
+
+      if (!res || !res.data) throw new Error("Request failed");
+
+      // Update listings with pagination data
+      dispatch(
+        setListings({
+          results: res?.data.results || [],
+          pagination: res.data.pagination,
+        })
+      );
+
+      console.log("Fetched listings in searchsec:", res?.data);
+      dispatch(setFilters({ [name]: value }));
+      router.push("/search?page=1");
+    } catch (error: any) {
+      console.error("Search error:", error);
+      dispatch(
+        setError(error?.response?.data?.message || "Failed to fetch listings")
+      );
+    }
   };
 
   return (
@@ -93,7 +125,7 @@ const PopularCities = () => {
         {cities.map((city, index) => (
           <button
             key={index}
-            name="location"
+            name="cityName"
             onClick={handleClick}
             value={city.name}
             // className="relative rounded-lg overflow-hidden shadow-md cursor-pointer hover:scale-105 transition-transform"
